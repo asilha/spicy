@@ -1,2 +1,26 @@
 
 module Spicy;
+
+%%{
+#include <zeek-spicy/zeek-compat.h>
+%%}
+
+function register_packet_analyzer%(map: PacketAnalyzer::DispatchMap, idx: count, analyzer_name_: string%) : bool
+    %{
+    std::string analyzer_name = ::zeek::util::strreplace(analyzer_name_->CheckString(), "::", "_");
+
+    auto analyzer = ::zeek::packet_mgr->GetAnalyzer(analyzer_name);
+    if ( ! analyzer ) {
+        zeek::reporter->Error("unknown analyzer '%s'", analyzer_name.c_str());
+        return zeek::val_mgr->False();
+    }
+
+    auto tag_val = analyzer->GetAnalyzerTag().AsVal()->InternalInt();
+    auto tag_enum = zeek::make_intrusive<EnumVal>(::zeek::packet_mgr->GetTagType(), tag_val);
+
+    auto rtype = ::zeek::id::find_type<RecordType>("PacketAnalyzer::DispatchEntry");
+    auto rval = zeek::make_intrusive<RecordVal>(rtype);
+    rval->Assign(0, tag_enum);
+    map->AsTableVal()->Assign(zeek::val_mgr->Count(idx), rval);
+    return zeek::val_mgr->True();
+    %}

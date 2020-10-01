@@ -902,6 +902,8 @@ public:
     /** Contstructor. */
     View() = default;
 
+    virtual ~View();
+
     /** Constructor for static view bracketed through two iterators. */
     explicit View(SafeConstIterator begin, SafeConstIterator end) : _begin(std::move(begin)), _end(std::move(end)) {
         _ensureValid();

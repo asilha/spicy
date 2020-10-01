@@ -374,8 +374,12 @@ Size View::size() const {
 
 Bytes Stream::data() const { return view().data(); }
 
+stream::View::~View() {
+}
+
 Bytes stream::View::data() const {
     Bytes s;
+    s.reserve(size());
 
     for ( auto block = firstBlock(); block; block = nextBlock(block) )
         s.append(std::string(reinterpret_cast<const char*>(block->start), block->size));

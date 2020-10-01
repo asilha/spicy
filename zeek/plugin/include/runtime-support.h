@@ -76,6 +76,13 @@ void register_protocol_analyzer(const std::string& name, hilti::rt::Protocol pro
 void register_file_analyzer(const std::string& name, const hilti::rt::Vector<std::string>& mime_types,
                             const std::string& parser);
 
+/**
+ * Registers an Spicy packet analyzer with its EVT meta information the
+ * plugin's runtime.
+ */
+void register_packet_analyzer(const std::string& name,
+                            const std::string& parser);
+
 /** Registers a Spicy enum type to make it available inside Zeek. */
 void register_enum_type(const std::string& ns, const std::string& id,
                         const hilti::rt::Vector<std::tuple<std::string, hilti::rt::integer::safe<int64_t>>>& labels);
@@ -207,6 +214,9 @@ void file_gap(uint64_t offset, uint64_t len);
 
 /** Signals the end of a file to Zeek's file analysis. */
 void file_end();
+
+/** Specifies the next-layer packet analyzer. */
+void forward_packet(uint32_t identifier);
 
 // Forward-declare to_val() functions.
 template<typename T, typename std::enable_if_t<hilti::rt::is_tuple<T>::value>* = nullptr>

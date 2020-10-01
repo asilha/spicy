@@ -17,6 +17,7 @@ void detail::printParserState(const std::string& unit_id, const hilti::rt::Value
                               const hilti::rt::stream::View& cur, int64_t lahead,
                               const hilti::rt::stream::SafeConstIterator& lahead_end, const std::string& literal_mode,
                               bool trim) {
+    return;
     auto str = [&](const hilti::rt::stream::SafeConstIterator& begin, const hilti::rt::stream::SafeConstIterator& end) {
         auto i = begin + 10;
         if ( i >= end )
