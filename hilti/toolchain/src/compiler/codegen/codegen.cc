@@ -1,5 +1,7 @@
 // Copyright (c) 2020 by the Zeek Project. See LICENSE for details.
 
+#include <functional>
+
 #include <hilti/ast/ctors/string.h>
 #include <hilti/ast/declarations/all.h>
 #include <hilti/ast/detail/visitor.h>
@@ -251,7 +253,9 @@ struct Visitor : hilti::visitor::PreOrder<void, Visitor> {
                 // The struct type takes care of the declaration.
                 return;
 
-            auto id_hook_impl = cxx::ID(unit->cxxNamespace(), fmt("__hook_%s_%s_%p", id_class, id_local, &n));
+            auto id_hook_impl =
+                cxx::ID(unit->cxxNamespace(), fmt("__hook_%s_%s_%p", id_class, id_local,
+                                                  std::hash<std::string>{}(n.function().meta().location())));
             auto id_hook_stub =
                 cxx::ID(cg->options().cxx_namespace_intern, id_module, fmt("__hook_%s_%s", id_class, id_local));
 
@@ -299,7 +303,9 @@ struct Visitor : hilti::visitor::PreOrder<void, Visitor> {
                 id_module = *module;
 
             auto id_local = id.sub(-1);
-            auto id_hook_impl = cxx::ID(unit->cxxNamespace(), fmt("__hook_%s_%s_%p", id_module, id_local, &n));
+            auto id_hook_impl =
+                cxx::ID(unit->cxxNamespace(), fmt("__hook_%s_%s_%p", id_class, id_local,
+                                                  std::hash<std::string>{}(n.function().meta().location())));
             auto id_hook_stub = cxx::ID(cg->options().cxx_namespace_intern, id_module, id_local);
 
             // Adapt the function we generate.
